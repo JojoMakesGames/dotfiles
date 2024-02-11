@@ -1,0 +1,129 @@
+# /Users/johnoatey/.config/tmuxinator/teamsnap.yml
+
+name: teamsnap
+root: ~/
+
+# Optional tmux socket
+# socket_name: foo
+
+# Note that the pre and post options have been deprecated and will be replaced by
+# project hooks.
+
+# Project hooks
+
+# Runs on project start, always
+# on_project_start: command
+
+# Run on project start, the first time
+# on_project_first_start: command
+
+# Run on project start, after the first time
+# on_project_restart: command
+
+# Run on project exit ( detaching from tmux session )
+# on_project_exit: command
+
+# Run on project stop
+# on_project_stop: command
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+# pre_window: rbenv shell 2.0.0-p247
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+# Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
+# tmux_command: byobu
+
+# Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
+# startup_window: editor
+
+# Specifies (by index) which pane of the specified window will be selected on project startup. If not set, the first pane is used.
+# startup_pane: 1
+
+# Controls whether the tmux session should be attached to automatically. Defaults to true.
+# attach: false
+
+windows:
+  - services:
+      layout: tiled
+      # Synchronize all panes of this window, can be enabled before or after the pane commands run.
+      # 'before' represents legacy functionality and will be deprecated in a future release, in favour of 'after'
+      # synchronize: after
+      panes:
+        - snapi:
+            - printf '\033]2;%s\033\\' 'snapi:3000'
+            - cd ~/teamsnap/snapi/work
+            - osnp run start
+            - start
+        - classic:
+            - printf '\033]2;%s\033\\' 'classic:3001'
+            - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+            - cd ~/teamsnap/classic
+            - osnp run start
+            - start
+              # - accounts-api:
+              #   - printf '\033]2;%s\033\\' 'accounts-api:4010'
+              #   - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+              #   - cd ~/teamsnap/accounts-api
+              #   - osnp run start
+              #   - start
+        - spas:
+            - printf '\033]2;%s\033\\' 'spas:3335'
+            - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+            - cd ~/teamsnap/teamsnap-spas/work
+            - yarn team:start
+        - cogsworth:
+            - printf '\033]2;%s\033\\' 'cogsworth:3004'
+            - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+            - cd ~/teamsnap/cogsworth
+            - osnp run start
+            - start
+        - payments-api:
+            - printf '\033]2;%s\033\\' 'payments-api:5505'
+            - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+            - cd ~/teamsnap/payments-api
+            - osnp run start
+            - start
+        - payment-service:
+            - printf '\033]2;%s\033\\' 'payment-service:5603'
+            - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+            - cd ~/teamsnap/payment-service
+            - osnp run start
+            - start
+        # - teams-service:
+        #     - printf '\033]2;%s\033\\' 'teams-service:5506'
+        #     - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+        #     - cd ~/teamsnap/teams-service
+        #     - osnp run start
+        #     - start
+        # - partner-service:
+        #     - printf '\033]2;%s\033\\' 'partner-service:5511'
+        #     - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+        #     - cd ~/teamsnap/partner-service/work
+        #     - osnp run start
+        #     - start
+        # - user-account-service:
+        #     - printf '\033]2;%s\033\\' 'user-account-service:5501'
+        #     - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+        #     - cd ~/teamsnap/user-account-service
+        #     - osnp run start
+        #     - start
+        # - person-service:
+        #     - printf '\033]2;%s\033\\' 'person-service:5512'
+        #     - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+        #     - cd ~/teamsnap/person-service
+        #     - osnp run start
+        #     - start
+        # - accounts-frontend:
+        #   - printf '\033]2;%s\033\\' 'accounts-frontend:9004'
+        #   - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+        #   - cd ~/teamsnap/accounts-frontend
+        #   - osnp run start
+        #   - start
+        # - soylent:
+        #   - printf '\033]2;%s\033\\' 'soylent:4005'
+        #   - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+        #   - cd ~/teamsnap/soylent
+        #   - osnp run start
+        #   - start
