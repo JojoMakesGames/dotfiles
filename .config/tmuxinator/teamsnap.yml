@@ -91,30 +91,36 @@ windows:
             - cd ~/teamsnap/payment-service
             - osnp run start
             - start
-        # - teams-service:
-        #     - printf '\033]2;%s\033\\' 'teams-service:5506'
-        #     - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
-        #     - cd ~/teamsnap/teams-service
-        #     - osnp run start
-        #     - start
+        - teams-service:
+            - printf '\033]2;%s\033\\' 'teams-service:5506'
+            - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+            - cd ~/teamsnap/teams-service
+            - osnp run start
+            - start
         # - partner-service:
         #     - printf '\033]2;%s\033\\' 'partner-service:5511'
         #     - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
         #     - cd ~/teamsnap/partner-service/work
         #     - osnp run start
         #     - start
-        # - user-account-service:
-        #     - printf '\033]2;%s\033\\' 'user-account-service:5501'
-        #     - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
-        #     - cd ~/teamsnap/user-account-service
-        #     - osnp run start
-        #     - start
-        # - person-service:
-        #     - printf '\033]2;%s\033\\' 'person-service:5512'
-        #     - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
-        #     - cd ~/teamsnap/person-service
-        #     - osnp run start
-        #     - start
+        - user-account-service:
+            - printf '\033]2;%s\033\\' 'user-account-service:5501'
+            - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+            - cd ~/teamsnap/user-account-service
+            - osnp run start
+            - start
+        - person-service:
+            - printf '\033]2;%s\033\\' 'person-service:5512'
+            - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+            - cd ~/teamsnap/person-service
+            - osnp run start
+            - start
+        - auth-service:
+            - printf '\033]2;%s\033\\' 'auth-service:400'
+            - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done
+            - cd ~/teamsnap/authentication-service
+            - osnp run start
+            - start
         # - accounts-frontend:
         #   - printf '\033]2;%s\033\\' 'accounts-frontend:9004'
         #   - until (( $(docker ps --filter="name=snapi" | grep -ci "up") > 0 )); do echo "waiting on snapi..."; sleep 2; done

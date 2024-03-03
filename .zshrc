@@ -121,6 +121,18 @@ tsbare() {
   ln -s main work
 }
 
+dl() {
+  docker logs -f "$1" | while IFS= read -r line; do
+    if echo "$line" | jq -e . >/dev/null 2>&1; then
+      echo "$line" | jq
+    elif [[ "${line:0:1}" == "{" ]]; then
+      echo "$line" | sed "s/\\n/\r/g" | jq
+    else
+      echo "$line"
+    fi
+  done
+}
+
 alias o='osnp run start'
 # alias bare='git clone --bare git@github.com:$1.git $1 && cd $1 && git worktree add main && ln -s main work'
 # alias tsbare='bare_init $1'

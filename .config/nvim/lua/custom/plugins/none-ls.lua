@@ -1,6 +1,7 @@
 return {
   'nvimtools/none-ls.nvim',
   event = 'VeryLazy',
+  disable = true,
   opts = function(_, opts)
     local nls = require 'null-ls'
     opts.sources = vim.list_extend(opts.sources or {}, {
