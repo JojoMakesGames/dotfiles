@@ -18,7 +18,7 @@ return {
   opts = {
     daily_notes = {
       -- Optional, if you keep daily notes in a separate directory.
-      folder = 'dailies',
+      folder = 'notes/dailies',
     },
     new_notes_directory = 'notes',
     follow_url_func = function(url)
@@ -67,6 +67,10 @@ return {
         path = '~/.obsidian/TeamSnap',
       },
       {
+        name = 'stripe',
+        path = '~/.obsidian/Teamsnap/stripe',
+      },
+      {
         name = 'personal',
         path = '~/.obsidian/Personal',
       },
@@ -96,6 +100,10 @@ return {
     {
       '<leader>oy',
       '<cmd>ObsidianYesterday<CR>',
+    },
+    {
+      '<leader>on',
+      '<cmd>ObsidianNew<CR>',
     },
   },
 }

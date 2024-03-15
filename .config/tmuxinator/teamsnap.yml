@@ -53,7 +53,7 @@ windows:
       panes:
         - snapi:
             - printf '\033]2;%s\033\\' 'snapi:3000'
-            - cd ~/teamsnap/snapi/work
+            - cd ~/teamsnap/snapi
             - osnp run start
             - start
         - classic:

@@ -133,6 +133,9 @@ dl() {
   done
 }
 
+bindkey -s ^f "$HOME/.local/share/tmux-sessionizer.sh/n"
+alias ts="$HOME/.local/share/tmux-sessionizer.sh"
+
 alias o='osnp run start'
 # alias bare='git clone --bare git@github.com:$1.git $1 && cd $1 && git worktree add main && ln -s main work'
 # alias tsbare='bare_init $1'
@@ -148,6 +151,7 @@ export JIRA_OAUTH_TOKEN=$(pass show teamsnap/jira)
 export EDITOR='nvim'
 export ENVIRONMENT='development'
 export RUBOCOP_CONFIG='/Users/johnoatey/.config/rubocop.yml'
+export CLOUDSDK_PYTHON='/usr/local/bin/python3.9'
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/johnoatey/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/johnoatey/google-cloud-sdk/path.zsh.inc'; fi
