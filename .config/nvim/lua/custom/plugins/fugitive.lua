@@ -35,14 +35,15 @@ end
 
 return {
   'tpope/vim-fugitive',
+  enabled = false,
   event = 'VeryLazy',
   keys = {
-    { '<leader>gs',  '<cmd>tab Git<cr>' },
-    { '<leader>gp',  '<cmd>Git push<cr>' },
+    { '<leader>gs', '<cmd>tab Git<cr>' },
+    { '<leader>gp', '<cmd>Git push<cr>' },
     { '<leader>grs', '<cmd>Git rebase -i main<cr>' },
     { '<leader>grc', '<cmd>tab Git rebase --continue<cr>' },
     { '<leader>gra', '<cmd>tab Git rebase --abort<cr>' },
-    { '<leader>gb',  '<cmd>Git blame<cr>' },
+    { '<leader>gb', '<cmd>Git blame<cr>' },
     { '<leader>gcb', ':lua MyMenu()<cr>' },
   },
 }

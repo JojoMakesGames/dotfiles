@@ -1,5 +1,6 @@
 return {
   'nvim-neo-tree/neo-tree.nvim',
+  enabled = false,
   keys = {
     { '<leader>f', '<cmd>Neotree reveal<cr>' },
   },
