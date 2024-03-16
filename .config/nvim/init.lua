@@ -318,7 +318,6 @@ require('lazy').setup {
       --  If you already have a Nerd Font, or terminal set up with fallback fonts
       --  you can enable this
       { 'nvim-tree/nvim-web-devicons' },
-      { 'telescope-live-grep-args.nvim' },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
