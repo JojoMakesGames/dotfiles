@@ -2,6 +2,7 @@ vim.opt.conceallevel = 2
 return {
   'epwalsh/obsidian.nvim',
   version = '*', -- recommended, use latest release instead of latest commit
+  enabled = false,
   event = 'VeryLazy',
   ft = 'markdown',
   -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
@@ -62,18 +63,18 @@ return {
       },
     },
     workspaces = {
-      {
-        name = 'teamsnap',
-        path = '~/.obsidian/TeamSnap',
-      },
-      {
-        name = 'stripe',
-        path = '~/.obsidian/Teamsnap/stripe',
-      },
-      {
-        name = 'personal',
-        path = '~/.obsidian/Personal',
-      },
+      --   {
+      --     name = 'teamsnap',
+      --     path = '~/.obsidian/TeamSnap',
+      --   },
+      --   {
+      --     name = 'stripe',
+      --     path = '~/.obsidian/Teamsnap/stripe',
+      --   },
+      --   {
+      --     name = 'personal',
+      --     path = '~/.obsidian/Personal',
+      --   },
       {
         name = 'gamedev',
         path = '~/.obsidian/GameDev',
