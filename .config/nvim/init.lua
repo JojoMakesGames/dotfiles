@@ -612,6 +612,12 @@ require('lazy').setup {
             -- certain features of an LSP (for example, turning off formatting for tsserver)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
+
+            require('lspconfig').gdscript.setup {
+              on_attach = function()
+                vim.cmd "echo 'gdscript lsp attached'"
+              end,
+            }
           end,
         },
       }
@@ -820,6 +826,7 @@ require('lazy').setup {
           'markdown_inline',
           'json',
           'yaml',
+          'gdscript',
         },
         -- Autoinstall languages that are not installed
         auto_install = true,

@@ -7,9 +7,22 @@ return {
       { 'nvim-lua/plenary.nvim' },
     },
     opts = {
-      debug = true, -- Enable debugging
-      -- See Configuration section for rest
+      debug = false, -- Enable debugging
     },
-    -- See Commands section for default commands if you want to lazy load on them
+    config = {
+      window = {
+        layout = 'float',
+        relative = 'cursor',
+        width = 1,
+        height = 0.4,
+        row = 1,
+      },
+    },
+    keys = {
+      {
+        '<leader>ct',
+        '<cmd>CopilotChatToggle<CR>',
+      },
+    },
   },
 }
