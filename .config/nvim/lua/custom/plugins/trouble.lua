@@ -3,7 +3,7 @@ return {
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   keys = {
     {
-      '<leader>xx',
+      '<leader>q',
       function()
         require('trouble').toggle()
       end,

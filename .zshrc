@@ -133,7 +133,11 @@ dl() {
   done
 }
 
-bindkey -s ^f "$HOME/.local/share/tmux-sessionizer.sh/n"
+alias work="timer 30m && terminal-notifier -message 'Pomodoro'\                                                    ─╯
+        -title 'Work Timer is up! Take a Break 😊'\
+        -sound Glass"
+
+bindkey -s ^f "$HOME/.local/share/tmux-sessionizer.sh\n"
 alias ts="$HOME/.local/share/tmux-sessionizer.sh"
 
 alias o='osnp run start'
