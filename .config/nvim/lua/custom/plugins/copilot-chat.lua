@@ -8,8 +8,6 @@ return {
     },
     opts = {
       debug = false, -- Enable debugging
-    },
-    config = {
       window = {
         layout = 'float',
         relative = 'cursor',

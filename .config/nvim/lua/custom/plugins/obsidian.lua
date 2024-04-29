@@ -2,7 +2,6 @@ vim.opt.conceallevel = 2
 return {
   'epwalsh/obsidian.nvim',
   version = '*', -- recommended, use latest release instead of latest commit
-  enabled = false,
   event = 'VeryLazy',
   ft = 'markdown',
   -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
@@ -47,7 +46,6 @@ return {
     sort_by = 'modified',
     sort_reversed = true,
     mappings = {
-      -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
       ['gf'] = {
         action = function()
           return require('obsidian').util.gf_passthrough()
@@ -63,18 +61,18 @@ return {
       },
     },
     workspaces = {
-      --   {
-      --     name = 'teamsnap',
-      --     path = '~/.obsidian/TeamSnap',
-      --   },
-      --   {
-      --     name = 'stripe',
-      --     path = '~/.obsidian/Teamsnap/stripe',
-      --   },
-      --   {
-      --     name = 'personal',
-      --     path = '~/.obsidian/Personal',
-      --   },
+      {
+        name = 'teamsnap',
+        path = '~/.obsidian/TeamSnap',
+      },
+      {
+        name = 'stripe',
+        path = '~/.obsidian/Teamsnap/stripe',
+      },
+      {
+        name = 'personal',
+        path = '~/.obsidian/Personal',
+      },
       {
         name = 'gamedev',
         path = '~/.obsidian/GameDev',

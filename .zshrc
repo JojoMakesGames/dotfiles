@@ -10,7 +10,8 @@ fi
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-export PATH=/opt/homebrew/bin:/Users/johnoatey/.rvm/gems/ruby-3.0.0/bin:/Users/johnoatey/.rvm/gems/ruby-3.0.0@global/bin:/Users/johnoatey/.rvm/rubies/ruby-3.0.0/bin:/Users/johnoatey/.nvm/versions/node/v16.13.2/bin:/Users/johnoatey/google-cloud-sdk/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/johnoatey/.bin:/Users/johnoatey/.rvm/bin:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=/opt/homebrew/bin:/Users/johnoatey/.rvm/gems/ruby-3.0.0/bin:/Users/johnoatey/.rvm/gems/ruby-3.0.0@global/bin:/Users/johnoatey/.rvm/rubies/ruby-3.0.0/bin:/Users/johnoatey/.nvm/versions/node/v16.13.2/bin:/Users/johnoatey/google-cloud-sdk/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/johnoatey/.bin:/Users/johnoatey/.rvm/bin:/usr/local/go/bin:$GOPATH/bin
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -133,9 +134,8 @@ dl() {
   done
 }
 
-alias work="timer 30m && terminal-notifier -message 'Pomodoro'\                                                    ─╯
-        -title 'Work Timer is up! Take a Break 😊'\
-        -sound Glass"
+alias work="timer 25m && terminal-notifier -message 'Pomodoro' -title 'Work Timer is up! Take a Break' -sound Glass"
+alias python="python3"
 
 bindkey -s ^f "$HOME/.local/share/tmux-sessionizer.sh\n"
 alias ts="$HOME/.local/share/tmux-sessionizer.sh"

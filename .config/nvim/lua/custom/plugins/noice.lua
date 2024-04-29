@@ -13,7 +13,7 @@ return {
   config = function()
     require('noice').setup {
       messages = {
-        view = false,
+        -- view = false,
       },
       lsp = {
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
