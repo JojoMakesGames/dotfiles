@@ -494,7 +494,9 @@ require('lazy').setup {
           --   })
           -- end,
         },
-        biome = {},
+        -- biome = {
+        --   cmd = { '/opt/homebrew/bin/biome' },
+        -- },
         -- solargraph = {
         --   reporters = { 'rubocop' },
         -- },
@@ -599,6 +601,9 @@ require('lazy').setup {
           end,
         },
       }
+      require('lspconfig').biome.setup {
+        capabilities = capabilities,
+      }
     end,
   },
   {
@@ -606,36 +611,67 @@ require('lazy').setup {
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
     opts = {
       settings = {
-        expose_as_code_action = { 'all' },
+        -- expose_as_code_action = { 'all' },
         complete_function_calls = true,
+        tsserver_file_preferences = function(ft)
+          return {
+            includeInlayParameterNameHints = 'all',
+            includeInlayVariableTypeHints = true,
+            includeInlayFunctionParameterTypeHints = true,
+            includeCompletionsForModuleExports = true,
+            quotePreference = 'auto',
+            includeCompletionsForImportStatements = true,
+          }
+        end,
       },
     },
   },
   { -- Autoformat
     'stevearc/conform.nvim',
     opts = {
-      notify_on_error = false,
-      format_after_save = {
-        lsp_fallback = true,
+      notify_on_error = true,
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_format = 'fallback',
       },
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        typescritp = { { 'prettierd', 'prettier', 'biome' } },
-        javascript = { { 'prettierd', 'prettier' } },
+        typescript = { { 'biome', 'prettierd', 'prettier' }, 'biome-check' },
+        -- javascript = { { 'prettierd', 'prettier' } },
         ruby = { 'rubocop' },
       },
+      formatters = {
+        biome = {
+          command = '/Users/johnoatey/.nvm/versions/node/v16.13.2/bin/biome',
+        },
+        ['biome-check'] = {
+          command = '/Users/johnoatey/.nvm/versions/node/v16.13.2/bin/biome',
+        },
+      },
     },
-    -- keys = {
-    --   -- Format the current buffer
-    --   { '<leader>F', function()
-    --     require('conform').format()
-    --   end, { desc = 'Conform [F]ormat' } },
-    -- },
+    -- config = function()
+    --   vim.api.nvim_create_autocmd('BufWritePre', {
+    --     pattern = '*',
+    --     callback = function(args)
+    --       require('conform').format {
+    --         bufnr = args.buf,
+    --         filter = function(client)
+    --           return client.name ~= 'tsserver'
+    --         end,
+    --       }
+    --     end,
+    --   })
+    -- end,
+    keys = {
+      -- Format the current buffer
+      {
+        '<leader>F',
+        function()
+          require('conform').format()
+        end,
+        { desc = 'Conform [F]ormat' },
+      },
+    },
   },
 
   { -- Autocompletion
@@ -703,7 +739,7 @@ require('lazy').setup {
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
           --  completions whenever it has completion options available.
-          ['<C-Space>'] = cmp.mapping.complete {},
+          ['<C-j>'] = cmp.mapping.complete {},
 
           -- Think of <c-l> as moving to the right of your snippet expansion.
           --  So if you have a snippet that's like:
