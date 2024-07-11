@@ -9,6 +9,7 @@ return {
   keys = {
     { '<leader>sm', ':NoiceTelescope<CR>' },
     { '<leader>m', ':Noice<CR>' },
+    { '<C-m>', ':NoiceDismiss<CR>' },
   },
   config = function()
     require('noice').setup {

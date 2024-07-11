@@ -10,8 +10,13 @@ fi
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+export DENO_INSTALL="/Users/johnoatey/.deno"
 export GOPATH=$HOME/go
-export PATH=/opt/homebrew/bin:/Users/johnoatey/.rvm/gems/ruby-3.0.0/bin:/Users/johnoatey/.rvm/gems/ruby-3.0.0@global/bin:/Users/johnoatey/.rvm/rubies/ruby-3.0.0/bin:/Users/johnoatey/.nvm/versions/node/v16.13.2/bin:/Users/johnoatey/google-cloud-sdk/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/johnoatey/.bin:/Users/johnoatey/.rvm/bin:/usr/local/go/bin:$GOPATH/bin
+export GOPRIVATE='github.com/teamsnap/**'
+export GONOPROXY='github.com/teamsnap/**'
+export GONOSUMDB='github.com/teamsnap/**'
+export PUBSUB_EMULATOR_HOST='http://host.docker.internal:8085'
+export PATH=/opt/homebrew/bin:/Users/johnoatey/.nvm/versions/node/v16.13.2/bin:/Users/johnoatey/google-cloud-sdk/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/johnoatey/.bin:/usr/local/go/bin:$GOPATH/bin:$DENO_INSTALL/bin
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -165,6 +170,7 @@ if [ -f '/Users/johnoatey/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
+export PATH="$PATH:$HOME/.rvm/gems/ruby-3.0.0/bin"
 export GEM_HOME="$HOME/.rvm/gems/ruby-3.0.0"
 export GEM_PATH="$HOME/.rvm/gems/ruby-3.0.0:$HOME/.rvm/gems/ruby-3.0.0@global"
 
@@ -175,3 +181,6 @@ export NVM_DIR="$HOME/.nvm"
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
+
+# Created by `pipx` on 2024-07-09 15:23:21
+export PATH="$PATH:/Users/johnoatey/.local/bin"

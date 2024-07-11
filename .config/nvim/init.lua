@@ -309,6 +309,7 @@ require('lazy').setup {
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+      vim.keymap.set('n', '<leader>sG', builtin.git_files, { desc = '[S]earch [G]it files' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
@@ -427,7 +428,7 @@ require('lazy').setup {
 
           -- Opens a popup that displays documentation about the word under your cursor
           --  See `:help K` for why this keymap
-          map('K', vim.lsp.buf.hover, 'Hover Documentation')
+          -- map('K', vim.lsp.buf.hover, 'Hover Documentation')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header
@@ -493,9 +494,10 @@ require('lazy').setup {
           --   })
           -- end,
         },
-        solargraph = {
-          reporters = { 'rubocop' },
-        },
+        biome = {},
+        -- solargraph = {
+        --   reporters = { 'rubocop' },
+        -- },
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -504,30 +506,27 @@ require('lazy').setup {
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {
-          on_attach = function(client, bufnr)
-            -- Automatically import missing packages
-            vim.api.nvim_create_autocmd('BufWritePre', {
-              pattern = '*.ts',
-              callback = function()
-                -- print(vim.inspect(vim.lsp.util))
-                local params = vim.lsp.util.make_range_params()
-                -- print(vim.inspect(params))
-                params.context = { only = { 'source.organizeImports' } }
-                local result = vim.lsp.buf_request_sync(0, 'textDocument/codeAction', params)
-                for cid, res in pairs(result or {}) do
-                  for _, r in pairs(res.result or {}) do
-                    if r.edit then
-                      local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or 'utf-16'
-                      vim.lsp.util.apply_workspace_edit(r.edit, enc)
-                    end
-                  end
-                end
-                vim.lsp.buf.format { async = false }
-              end,
-            })
-          end,
-        },
+        -- tsserver = {
+        --   on_attach = function(client, bufnr)
+        --     vim.api.nvim_create_autocmd('BufWritePre', {
+        --       pattern = '*.ts',
+        --       callback = function()
+        --         local params = vim.lsp.util.make_range_params()
+        --         params.context = { only = { 'source.organizeImports' } }
+        --         local result = vim.lsp.buf_request_sync(0, 'textDocument/codeAction', params)
+        --         for cid, res in pairs(result or {}) do
+        --           for _, r in pairs(res.result or {}) do
+        --             if r.edit then
+        --               local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or 'utf-16'
+        --               vim.lsp.util.apply_workspace_edit(r.edit, enc)
+        --             end
+        --           end
+        --         end
+        --         -- vim.lsp.buf.format { async = false }
+        --       end,
+        --     })
+        --   end,
+        -- },
         elixirls = {
           cmd = { '/Users/johnoatey/.local/share/nvim/mason/packages/elixir-ls/language_server.sh' },
         },
@@ -541,9 +540,6 @@ require('lazy').setup {
         },
         --
         lua_ls = {
-          -- cmd = {...},
-          -- filetypes { ...},
-          -- capabilities = {},
           settings = {
             Lua = {
               runtime = { version = 'LuaJIT' },
@@ -594,11 +590,6 @@ require('lazy').setup {
             -- certain features of an LSP (for example, turning off formatting for tsserver)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
-            -- require('lspconfig')['solargraph'].setup {
-            --   cmd = { '/Users/johnoatey/.local/share/nvim/mason/packages/solargraph/solargraph' },
-            --   reporters = { 'rubocop' },
-            --   capabilities = capabilities,
-            -- }
 
             require('lspconfig').gdscript.setup {
               on_attach = function()
@@ -610,7 +601,16 @@ require('lazy').setup {
       }
     end,
   },
-
+  {
+    'pmizio/typescript-tools.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+    opts = {
+      settings = {
+        expose_as_code_action = { 'all' },
+        complete_function_calls = true,
+      },
+    },
+  },
   { -- Autoformat
     'stevearc/conform.nvim',
     opts = {
@@ -625,7 +625,7 @@ require('lazy').setup {
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        typescritp = { { 'prettierd', 'prettier' } },
+        typescritp = { { 'prettierd', 'prettier', 'biome' } },
         javascript = { { 'prettierd', 'prettier' } },
         ruby = { 'rubocop' },
       },
