@@ -601,9 +601,6 @@ require('lazy').setup {
         },
         --
         lua_ls = {
-          -- cmd = {...},
-          -- filetypes { ...},
-          -- capabilities = {},
           settings = {
             Lua = {
               runtime = { version = 'LuaJIT' },
@@ -655,14 +652,25 @@ require('lazy').setup {
             -- certain features of an LSP (for example, turning off formatting for tsserver)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
-
-            require('lspconfig').gdscript.setup {
-              on_attach = function()
-                vim.cmd "echo 'gdscript lsp attached'"
-              end,
-            }
           end,
         },
+      }
+      require('lspconfig')['gdscript'].setup {
+        -- capabilities = capabilities,
+        name = 'godot',
+        cmd = vim.lsp.rpc.connect('127.0.0.1', '6005'),
+        capabilities = capabilities,
+        -- on_attach = function(client, bufnr)
+        --   print 'attached'
+        --   vim.api.nvim_create_autocmd('InsertEnter', {
+        --     desc = 'Test',
+        --     group = vim.api.nvim_create_augroup('gdscript good autocomplete', { clear = true }),
+        --     callback = function()
+        --       print 'insert changed'
+        --       require('cmp').mapping.complete()
+        --     end,
+        --   })
+        -- end,
       }
     end,
   },
@@ -731,7 +739,7 @@ require('lazy').setup {
             luasnip.lsp_expand(args.body)
           end,
         },
-        completion = { completeopt = 'menu,menuone,noinsert' },
+        -- completion = { completeopt = 'menu,menuone,noinsert' },
 
         -- TODO:
         -- For an understanding of why these mappings were
