@@ -7,5 +7,8 @@ config.initial_rows = 300
 config.use_dead_keys = false
 config.window_background_opacity = 0.8
 config.scrollback_lines = 10000
+config.colors = require("cyberdream")
+config.enable_tab_bar = false
+config.window_decorations = "RESIZE"
 
 return config

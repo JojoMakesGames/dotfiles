@@ -69,6 +69,9 @@ vim.opt.tabstop = 4
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- Inlay hints
+vim.keymap.set('n', '<leader>i', '<cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<CR>', { desc = 'Toggle inlay hints' })
+
 -- quickfix keybinds
 vim.keymap.set('n', '<C-n>', '<cmd>cnext<CR>', { desc = 'Go to next quickfix item' })
 vim.keymap.set('n', '<C-p>', '<cmd>cprev<CR>', { desc = 'Go to previous quickfix item' })
@@ -102,26 +105,6 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- vim.keymap.set('n', '<leader>1', function()
---   print(vim.inspect(vim.api.nvim_list_chans()))
--- end)
--- vim.keymap.set('n', '<leader>e', function()
---   local function handle_updates(job_id, data, event)
---     for _, v in ipairs(data) do
---       -- if type(table) == 'table' then
---         -- for _, u in ipairs(v) do
---         --   print(u)
---         -- end
---         -- print('Failed tests: ' .. v['numFailedTests'])
---       -- end
---     end
---   end
---   -- vim.fn.jobstart('jest test/services/deposit-accounts.spec.ts --json', {
---   vim.fn.jobstart('osnp run start', {
---     on_stdout = handle_updates,
---     on_exit = function(job_id, exit_code, event) end,
---   })
--- end)
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -673,6 +656,7 @@ require('lazy').setup {
     --     end,
     --   })
     -- end,
+    event = 'BufWritePre',
     keys = {
       -- Format the current buffer
       {
@@ -781,26 +765,39 @@ require('lazy').setup {
     end,
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
-    'folke/tokyonight.nvim',
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
+  -- { -- You can easily change to a different colorscheme.
+  --   -- Change the name of the colorscheme plugin below, and then
+  --   -- change the command in the config to whatever the name of that colorscheme is
+  --   --
+  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
+  --   'folke/tokyonight.nvim',
+  --   lazy = false, -- make sure we load this during startup if it is your main colorscheme
+  --   priority = 1000, -- make sure to load this before all the other start plugins
+  --   config = function()
+  --     -- You can configure highlights by doing something like
+  --     vim.cmd.hi 'Comment gui=none'
+  --     require('tokyonight').setup {
+  --       transparent = true,
+  --       styles = {
+  --         sidebars = 'transparent',
+  --         floats = 'transparent',
+  --       },
+  --     }
+  --     -- Load the colorscheme here
+  --     vim.cmd.colorscheme 'tokyonight-night'
+  --   end,
+  -- },
+  {
+    'scottmckendry/cyberdream.nvim',
+    lazy = false,
+    priority = 1000,
     config = function()
-      -- You can configure highlights by doing something like
       vim.cmd.hi 'Comment gui=none'
-      require('tokyonight').setup {
+      require('cyberdream').setup {
         transparent = true,
-        styles = {
-          sidebars = 'transparent',
-          floats = 'transparent',
-        },
+        italic_comments = true,
       }
-      -- Load the colorscheme here
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'cyberdream'
     end,
   },
 
@@ -894,7 +891,7 @@ require('lazy').setup {
   --  Here are some example plugins that I've included in the kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
