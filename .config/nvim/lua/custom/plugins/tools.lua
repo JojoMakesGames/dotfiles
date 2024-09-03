@@ -1,5 +1,6 @@
 vim.opt.conceallevel = 2 -- for markdown
 return {
+  { 'windwp/nvim-autopairs', event = 'InsertEnter', config = true },
   {
     'kristijanhusak/vim-dadbod-ui',
     dependencies = {
@@ -160,6 +161,35 @@ return {
   },
   {
     'mistweaverco/kulala.nvim',
-    opts = {},
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+    },
+    config = function()
+      -- Setup is required, even if you don't pass any options
+      require('kulala').setup()
+
+      local pickers = require 'telescope.pickers'
+      local finders = require 'telescope.finders'
+      local conf = require('telescope.config').values
+
+      local find_http_files = function()
+        pickers
+          .new({}, {
+            prompt_title = 'HTTP Files',
+            finder = finders.new_oneshot_job { 'find', '.', '-name', '*.http', '-maxdepth', '1', '-exec', 'basename', '\\{\\}', '.po', '\\;' },
+          })
+          :find()
+      end
+
+      vim.api.nvim_create_user_command('KulalaFindHttpFiles', find_http_files, {})
+      vim.api.nvim_set_keymap('n', '<leader>sp', '<cmd>KulalaFindHttpFiles<CR>', { noremap = true, silent = true })
+      vim.api.nvim_create_autocmd('BufEnter', {
+        desc = 'Setup Kulala keymaps',
+        pattern = '*.http',
+        callback = function()
+          vim.api.nvim_buf_set_keymap(0, 'n', '<leader>k', '<cmd>lua require("kulala").run()<CR>', {})
+        end,
+      })
+    end,
   },
 }

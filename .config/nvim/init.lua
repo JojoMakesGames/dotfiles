@@ -170,6 +170,31 @@ require('lazy').setup {
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      on_attach = function(bufnr)
+        local gitsigns = require 'gitsigns'
+        local function map(mode, l, r, opts)
+          opts = opts or {}
+          opts.buffer = bufnr
+          vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        map('n', ']c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { ']c', bang = true }
+          else
+            gitsigns.nav_hunk 'next'
+          end
+        end)
+
+        map('n', '[c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { '[c', bang = true }
+          else
+            gitsigns.nav_hunk 'prev'
+          end
+        end)
+      end,
     },
   },
 
@@ -765,41 +790,41 @@ require('lazy').setup {
     end,
   },
 
-  -- { -- You can easily change to a different colorscheme.
-  --   -- Change the name of the colorscheme plugin below, and then
-  --   -- change the command in the config to whatever the name of that colorscheme is
-  --   --
-  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
-  --   'folke/tokyonight.nvim',
-  --   lazy = false, -- make sure we load this during startup if it is your main colorscheme
-  --   priority = 1000, -- make sure to load this before all the other start plugins
-  --   config = function()
-  --     -- You can configure highlights by doing something like
-  --     vim.cmd.hi 'Comment gui=none'
-  --     require('tokyonight').setup {
-  --       transparent = true,
-  --       styles = {
-  --         sidebars = 'transparent',
-  --         floats = 'transparent',
-  --       },
-  --     }
-  --     -- Load the colorscheme here
-  --     vim.cmd.colorscheme 'tokyonight-night'
-  --   end,
-  -- },
-  {
-    'scottmckendry/cyberdream.nvim',
-    lazy = false,
-    priority = 1000,
+  { -- You can easily change to a different colorscheme.
+    -- Change the name of the colorscheme plugin below, and then
+    -- change the command in the config to whatever the name of that colorscheme is
+    --
+    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
+    'folke/tokyonight.nvim',
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
     config = function()
+      -- You can configure highlights by doing something like
       vim.cmd.hi 'Comment gui=none'
-      require('cyberdream').setup {
+      require('tokyonight').setup {
         transparent = true,
-        italic_comments = true,
+        styles = {
+          sidebars = 'transparent',
+          floats = 'transparent',
+        },
       }
-      vim.cmd.colorscheme 'cyberdream'
+      -- Load the colorscheme here
+      vim.cmd.colorscheme 'tokyonight-night'
     end,
   },
+  -- {
+  --   'scottmckendry/cyberdream.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd.hi 'Comment gui=none'
+  --     require('cyberdream').setup {
+  --       transparent = true,
+  --       italic_comments = true,
+  --     }
+  --     vim.cmd.colorscheme 'cyberdream'
+  --   end,
+  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -850,6 +875,7 @@ require('lazy').setup {
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup {
         ensure_installed = {
+          'http',
           'bash',
           'c',
           'html',
