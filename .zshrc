@@ -6,17 +6,13 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-export DENO_INSTALL="/Users/johnoatey/.deno"
 export GOPATH=$HOME/go
-export GOPRIVATE='github.com/teamsnap/**'
-export GONOPROXY='github.com/teamsnap/**'
-export GONOSUMDB='github.com/teamsnap/**'
 export PUBSUB_EMULATOR_HOST='http://host.docker.internal:8085'
-export PATH=/opt/homebrew/bin:/Users/johnoatey/.nvm/versions/node/v16.13.2/bin:/Users/johnoatey/google-cloud-sdk/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/johnoatey/.bin:/usr/local/go/bin:$GOPATH/bin:$DENO_INSTALL/bin
+export PATH="$PATH:/opt/nvim-linux64/bin"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -119,14 +115,6 @@ bare() {
   ln -s main work
 }
 
-tsbare() {
-  git clone --bare git@github.com:teamsnap/$1.git $1
-  cd $1 
-  git config set remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
-  git worktree add main 
-  ln -s main work
-}
-
 dl() {
   docker logs -f "$1" | while IFS= read -r line; do
     if echo "$line" | jq -e . >/dev/null 2>&1; then
@@ -142,45 +130,16 @@ dl() {
 alias work="timer 25m && terminal-notifier -message 'Pomodoro' -title 'Work Timer is up! Take a Break' -sound Glass"
 alias python="python3"
 
-bindkey -s ^f "$HOME/.local/share/tmux-sessionizer.sh\n"
-alias ts="$HOME/.local/share/tmux-sessionizer.sh"
-
-alias o='osnp run start'
-# alias bare='git clone --bare git@github.com:$1.git $1 && cd $1 && git worktree add main && ln -s main work'
-# alias tsbare='bare_init $1'
-alias gl='ln -s $1 work'
-alias tmuxneovim="$HOME/.config/tmux-neovim.sh"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 # PATH=$PATH:/opt/homebrew/bin
-export NPM_TOKEN=$(pass show teamsnap/npm)
-export GITHUB_OAUTH_TOKEN=$(pass show teamsnap/github)
-export JIRA_OAUTH_TOKEN=$(pass show teamsnap/jira)
 export EDITOR='nvim'
 export ENVIRONMENT='development'
-export RUBOCOP_CONFIG='/Users/johnoatey/.config/rubocop.yml'
 export CLOUDSDK_PYTHON='/usr/local/bin/python3.9'
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/johnoatey/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/johnoatey/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/johnoatey/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/johnoatey/google-cloud-sdk/completion.zsh.inc'; fi
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
 export PATH="$PATH:$HOME/.rvm/gems/ruby-3.0.0/bin"
 export GEM_HOME="$HOME/.rvm/gems/ruby-3.0.0"
 export GEM_PATH="$HOME/.rvm/gems/ruby-3.0.0:$HOME/.rvm/gems/ruby-3.0.0@global"
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
-
-# Created by `pipx` on 2024-07-09 15:23:21
-export PATH="$PATH:/Users/johnoatey/.local/bin"

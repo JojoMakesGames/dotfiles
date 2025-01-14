@@ -480,75 +480,6 @@ require('lazy').setup {
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        gopls = {
-          -- on_attach = function(client, bufnr)
-          --   -- Automatically import missing packages
-          --   vim.api.nvim_create_autocmd('BufWritePre', {
-          --     pattern = '*.go',
-          --     callback = function()
-          --       local params = vim.lsp.util.make_range_params()
-          --       params.context = { only = { 'source.organizeImports' } }
-          --       local result = vim.lsp.buf_request_sync(0, 'textDocument/codeAction', params)
-          --       for cid, res in pairs(result or {}) do
-          --         for _, r in pairs(res.result or {}) do
-          --           if r.edit then
-          --             local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or 'utf-16'
-          --             vim.lsp.util.apply_workspace_edit(r.edit, enc)
-          --           end
-          --         end
-          --       end
-          --       vim.lsp.buf.format { async = false }
-          --     end,
-          --   })
-          -- end,
-        },
-        -- biome = {
-        --   cmd = { '/opt/homebrew/bin/biome' },
-        -- },
-        -- solargraph = {
-        --   reporters = { 'rubocop' },
-        -- },
-        -- pyright = {},
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {
-        --   on_attach = function(client, bufnr)
-        --     vim.api.nvim_create_autocmd('BufWritePre', {
-        --       pattern = '*.ts',
-        --       callback = function()
-        --         local params = vim.lsp.util.make_range_params()
-        --         params.context = { only = { 'source.organizeImports' } }
-        --         local result = vim.lsp.buf_request_sync(0, 'textDocument/codeAction', params)
-        --         for cid, res in pairs(result or {}) do
-        --           for _, r in pairs(res.result or {}) do
-        --             if r.edit then
-        --               local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or 'utf-16'
-        --               vim.lsp.util.apply_workspace_edit(r.edit, enc)
-        --             end
-        --           end
-        --         end
-        --         -- vim.lsp.buf.format { async = false }
-        --       end,
-        --     })
-        --   end,
-        -- },
-        elixirls = {
-          cmd = { '/Users/johnoatey/.local/share/nvim/mason/packages/elixir-ls/language_server.sh' },
-        },
-        eslint = {
-          on_attach = function(client, bufnr)
-            vim.api.nvim_create_autocmd('BufWritePre', {
-              buffer = bufnr,
-              command = 'EslintFixAll',
-            })
-          end,
-        },
-        --
         lua_ls = {
           settings = {
             Lua = {
@@ -587,7 +518,7 @@ require('lazy').setup {
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format lua code
-        'prettier',
+        'gdtoolkit',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -620,9 +551,6 @@ require('lazy').setup {
         --   })
         -- end,
       }
-      require('lspconfig').biome.setup {
-        capabilities = capabilities,
-      }
     end,
   },
   {
@@ -649,13 +577,24 @@ require('lazy').setup {
     'stevearc/conform.nvim',
     opts = {
       notify_on_error = true,
-      format_on_save = {
-        timeout_ms = 500,
-        lsp_format = 'fallback',
-      },
+      format_on_save = function(bufnr)
+        local ignore_filetypes = { 'gdscript' }
+        if vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
+          return
+        end
+        return { timeout_ms = 500, lsp_format = 'fallback' }
+      end,
+      format_after_save = function(bufnr)
+        local ignore_filetypes = { 'gdscript' }
+        if not vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
+          return
+        end
+        return { lsp_format = 'fallback' }
+      end,
       formatters_by_ft = {
         lua = { 'stylua' },
         typescript = { { 'biome', 'prettierd', 'prettier' }, 'biome-check' },
+        gdscript = { 'gdformat' },
         -- javascript = { { 'prettierd', 'prettier' } },
         ruby = { 'rubocop' },
       },
