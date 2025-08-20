@@ -10,9 +10,12 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+export ZSH_THEME="cloud"
 export GOPATH=$HOME/go
 export PUBSUB_EMULATOR_HOST='http://host.docker.internal:8085'
 export PATH="$PATH:/opt/nvim-linux64/bin"
+export DOTNET_ROOT=$HOME/.dotnet
+export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,

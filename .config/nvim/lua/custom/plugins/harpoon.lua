@@ -1,5 +1,5 @@
-local wk = require 'which-key'
-wk.register { ['<leader>h'] = { name = 'Harpoon' } }
+-- local wk = require 'which-key'
+-- wk.register { ['<leader>h'] = { name = 'Harpoon' } }
 return {
   'ThePrimeagen/harpoon',
   event = 'VeryLazy',

@@ -218,15 +218,6 @@ require('lazy').setup {
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
       require('which-key').setup()
-
-      -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-      }
     end,
   },
 
@@ -489,7 +480,6 @@ require('lazy').setup {
                 -- Tells lua_ls where to find all the Lua files that you have loaded
                 -- for your neovim configuration.
                 library = {
-                  '${3rd}/luv/library',
                   unpack(vim.api.nvim_get_runtime_file('', true)),
                 },
                 -- If lua_ls is really slow on your computer, you can try this instead:
@@ -499,7 +489,10 @@ require('lazy').setup {
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = {
+                globals = { 'vim', 'require' },
+                disable = { 'missing-fields' },
+              },
             },
           },
         },
@@ -511,7 +504,12 @@ require('lazy').setup {
       --    :Mason
       --
       --  You can press `g?` for help in this menu
-      require('mason').setup()
+      require('mason').setup {
+        registries = {
+          'github:mason-org/mason-registry',
+          'github:Crashdummyy/mason-registry',
+        },
+      }
 
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
@@ -537,7 +535,7 @@ require('lazy').setup {
       require('lspconfig')['gdscript'].setup {
         -- capabilities = capabilities,
         name = 'godot',
-        cmd = vim.lsp.rpc.connect('127.0.0.1', '6005'),
+        cmd = vim.lsp.rpc.connect('127.0.0.1', 6005),
         capabilities = capabilities,
         -- on_attach = function(client, bufnr)
         --   print 'attached'
