@@ -14,7 +14,7 @@ export ZSH_THEME="cloud"
 export GOPATH=$HOME/go
 export PUBSUB_EMULATOR_HOST='http://host.docker.internal:8085'
 export PATH="$PATH:/opt/nvim-linux64/bin"
-export DOTNET_ROOT=$HOME/.dotnet
+export DOTNET_ROOT="/usr/local/share/dotnet"
 export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
 
 # Set name of the theme to load --- if set to "random", it will
@@ -83,7 +83,7 @@ export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting web-search)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting web-search npm git yarn aws docker-compose brew)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -146,3 +146,8 @@ export PATH="$PATH:$HOME/.rvm/bin"
 export PATH="$PATH:$HOME/.rvm/gems/ruby-3.0.0/bin"
 export GEM_HOME="$HOME/.rvm/gems/ruby-3.0.0"
 export GEM_PATH="$HOME/.rvm/gems/ruby-3.0.0:$HOME/.rvm/gems/ruby-3.0.0@global"
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/jojooatey/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
