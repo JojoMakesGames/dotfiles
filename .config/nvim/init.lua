@@ -1,81 +1,31 @@
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
-vim.opt.number = true
+require 'opts'
+require 'keymaps'
+require 'lsp'
 
-vim.opt.mouse = 'a'
-
-vim.opt.showmode = false
-
-vim.opt.clipboard = 'unnamedplus'
-
-vim.opt.breakindent = true
-
-vim.opt.undofile = true
-
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-
-vim.opt.signcolumn = 'yes'
-
-vim.opt.updatetime = 250
-vim.opt.timeoutlen = 300
-
-vim.opt.splitright = true
-vim.opt.splitbelow = true
-
-vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-
-vim.opt.inccommand = 'split'
-
-vim.opt.cursorline = true
-
-vim.opt.scrolloff = 15
-
-vim.opt.relativenumber = true
-vim.opt.tabstop = 4
-vim.opt.hlsearch = true
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-
-vim.keymap.set('n', '<leader>i', '<cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<CR>', { desc = 'Toggle inlay hints' })
-
-vim.keymap.set('n', '<C-n>', '<cmd>cnext<CR>', { desc = 'Go to next quickfix item' })
-vim.keymap.set('n', '<C-p>', '<cmd>cprev<CR>', { desc = 'Go to previous quickfix item' })
-
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
-
-vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
-vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-})
-
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
-  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
-end ---@diagnostic disable-next-line: undefined-field
-vim.opt.rtp:prepend(lazypath)
+vim.diagnostic.config { virtual_text = true }
 
 require('lazy').setup {
   'tpope/vim-sleuth',
+  {
+    'seblyng/roslyn.nvim',
+    config = function()
+      vim.lsp.config('roslyn', {
+        settings = {
+          ['csharp|inlay_hints'] = {
+            csharp_enable_inlay_hints_for_implicit_object_creation = true,
+            csharp_enable_inlay_hints_for_implicit_variable_types = true,
+          },
+          ['csharp|code_lens'] = {
+            dotnet_enable_references_code_lens = true,
+          },
+          ['csharp|formatting'] = {
+            dotnet_organize_imports_on_format = true,
+          },
+        },
+      })
+      vim.lsp.enable { 'roslyn' }
+    end,
+  },
   { 'numToStr/Comment.nvim', opts = {} },
   {
     'lewis6991/gitsigns.nvim',
@@ -182,144 +132,17 @@ require('lazy').setup {
     end,
   },
   {
-    'neovim/nvim-lspconfig',
-    dependencies = {
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
-      'WhoIsSethDaniel/mason-tool-installer.nvim',
-
-      -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
-    },
-    config = function()
-      vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
-        callback = function(event)
-          local map = function(keys, func, desc)
-            vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
-          end
-          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.server_capabilities.documentHighlightProvider then
-            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-              buffer = event.buf,
-              callback = vim.lsp.buf.document_highlight,
-            })
-
-            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-              buffer = event.buf,
-              callback = vim.lsp.buf.clear_references,
-            })
-          end
-        end,
-      })
-
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities.textDocument.onTypeFormatting = { dynamicRegistration = false }
-      capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
-      local servers = {
-        lua_ls = {
-          settings = {
-            Lua = {
-              runtime = { version = 'LuaJIT' },
-              workspace = {
-                checkThirdParty = false,
-                library = {
-                  unpack(vim.api.nvim_get_runtime_file('', true)),
-                },
-              },
-              completion = {
-                callSnippet = 'Replace',
-              },
-              diagnostics = {
-                globals = { 'vim', 'require' },
-                disable = { 'missing-fields' },
-              },
-            },
-          },
-        },
-      }
-
-      require('mason').setup {
-        registries = {
-          'github:mason-org/mason-registry',
-          'github:Crashdummyy/mason-registry',
-        },
-      }
-      local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        'stylua',
-        'gdtoolkit',
-      })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
-      require('mason-lspconfig').setup {
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
-      }
-      require('lspconfig')['gdscript'].setup {
-        name = 'godot',
-        cmd = vim.lsp.rpc.connect('127.0.0.1', 6005),
-        capabilities = capabilities,
-      }
-    end,
-  },
-  -- {
-  --   'pmizio/typescript-tools.nvim',
-  --   dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
-  --   opts = {
-  --     settings = {
-  --       -- expose_as_code_action = { 'all' },
-  --       complete_function_calls = true,
-  --       tsserver_file_preferences = function(ft)
-  --         return {
-  --           includeInlayParameterNameHints = 'all',
-  --           includeInlayVariableTypeHints = true,
-  --           includeInlayFunctionParameterTypeHints = true,
-  --           includeCompletionsForModuleExports = true,
-  --           quotePreference = 'auto',
-  --           includeCompletionsForImportStatements = true,
-  --         }
-  --       end,
-  --     },
-  --   },
-  -- },
-  {
     'stevearc/conform.nvim',
     opts = {
       notify_on_error = true,
-      format_on_save = function(bufnr)
-        local ignore_filetypes = { 'gdscript' }
-        if vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
-          return
-        end
-        return { timeout_ms = 500, lsp_format = 'fallback' }
-      end,
       format_after_save = function(bufnr)
-        local ignore_filetypes = { 'gdscript' }
-        if not vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
-          return
-        end
         return { lsp_format = 'fallback' }
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- typescript = { 'biome', 'biome-check' },
+        typescriptreact = { 'biome', 'biome-check' },
         gdscript = { 'gdformat' },
-        -- json = { 'biome' },
+        json = { 'biome' },
         ruby = { 'rubocop' },
       },
     },
