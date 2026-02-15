@@ -1,0 +1,32 @@
+{
+  "plugins": {
+    "copilot": {
+      "rev": "dfe0a3a1c256167d181488a73ec6ccab8d8931a9",
+      "src": "https://github.com/github/copilot.vim"
+    },
+    "copilot.vim": {
+      "rev": "dfe0a3a1c256167d181488a73ec6ccab8d8931a9",
+      "src": "https://github.com/github/copilot.vim"
+    },
+    "gitsigns.nvim": {
+      "rev": "f780609807eca1f783a36a8a31c30a48fbe150c5",
+      "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
+    "gruvbox.nvim": {
+      "rev": "5e0a460d8e0f7f669c158dedd5f9ae2bcac31437",
+      "src": "https://github.com/ellisonleao/gruvbox.nvim"
+    },
+    "gsigns": {
+      "rev": "f780609807eca1f783a36a8a31c30a48fbe150c5",
+      "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
+    "mason.nvim": {
+      "rev": "7dc4facca9702f95353d5a1f87daf23d78e31c2a",
+      "src": "https://github.com/williamboman/mason.nvim"
+    },
+    "roslyn.nvim": {
+      "rev": "0c4a6f5b64122b51a64e0c8f7aae140ec979690e",
+      "src": "https://github.com/seblyng/roslyn.nvim"
+    }
+  }
+}

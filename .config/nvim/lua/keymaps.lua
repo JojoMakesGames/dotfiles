@@ -1,7 +1,5 @@
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
-vim.keymap.set('n', '<leader>i', '<cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<CR>', { desc = 'Toggle inlay hints' })
-
 vim.keymap.set('n', '<C-n>', '<cmd>cnext<CR>', { desc = 'Go to next quickfix item' })
 vim.keymap.set('n', '<C-p>', '<cmd>cprev<CR>', { desc = 'Go to previous quickfix item' })
 
@@ -25,8 +23,6 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = '[g]o to [d]efinition' })
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',

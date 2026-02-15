@@ -35,3 +35,28 @@ vim.opt.scrolloff = 15
 vim.opt.relativenumber = true
 vim.opt.tabstop = 4
 vim.opt.hlsearch = true
+
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.opt.foldtext = ''
+vim.opt.foldlevelstart = 100
+
+-- Add #region folding support for supported languages
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact', 'cs', 'csharp', 'c', 'cpp' },
+  callback = function()
+    vim.opt_local.foldmethod = 'expr'
+    vim.opt_local.foldexpr = 'v:lua.RegionFold(v:lnum)'
+  end,
+})
+
+function _G.RegionFold(lnum)
+  local line = vim.fn.getline(lnum)
+  if line:match '^%s*//.*#region' or line:match '^%s*/%*.*#region' then
+    return '>1'
+  elseif line:match '^%s*//.*#endregion' or line:match '^%s*/%*.*#endregion' then
+    return '<1'
+  else
+    return '='
+  end
+end

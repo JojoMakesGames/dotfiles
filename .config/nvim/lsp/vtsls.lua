@@ -23,10 +23,48 @@ return {
   cmd = { 'vtsls', '--stdio' },
   root_markers = { 'package.json', '.git' },
   filetypes = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' },
-  on_attach = function(client, bufnr)
+  on_attach = function(client, _)
     if has_eslint_config(client.config.root_dir) then
-      client.server_capabilities.documentFormattingProvider = false
-      client.server_capabilities.documentRangeFormattingProvider = false
+      client.server_capabilities.documentFormattingProvider = true
+      client.server_capabilities.documentRangeFormattingProvider = true
     end
   end,
+  settings = {
+    typescript = {
+      suggest = {
+        autoImports = true,
+        completeFunctionCalls = true,
+      },
+      preferences = {
+        includeCompletionsForModuleExports = true,
+        includeCompletionsWithSnippetText = true,
+      },
+      inlayHints = {
+        parameterNames = { enabled = 'all' },
+        parameterTypes = { enabled = true },
+        variableTypes = { enabled = true },
+        propertyDeclarationTypes = { enabled = true },
+        functionLikeReturnTypes = { enabled = true },
+        enumMemberValues = { enabled = true },
+      },
+    },
+    javascript = {
+      suggest = {
+        autoImports = true,
+        completeFunctionCalls = true,
+      },
+      preferences = {
+        includeCompletionsForModuleExports = true,
+        includeCompletionsWithSnippetText = true,
+      },
+      inlayHints = {
+        parameterNames = { enabled = 'all' },
+        parameterTypes = { enabled = true },
+        variableTypes = { enabled = true },
+        propertyDeclarationTypes = { enabled = true },
+        functionLikeReturnTypes = { enabled = true },
+        enumMemberValues = { enabled = true },
+      },
+    },
+  },
 }

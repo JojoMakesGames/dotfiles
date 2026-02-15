@@ -7,7 +7,7 @@ return {
   vim.keymap.set('n', '<leader>J', function()
     local branchName = vim.fn.system 'git rev-parse --abbrev-ref HEAD'
     local jira = branchName.gsub(branchName, '_.*', '')
-    vim.fn.system('open https://teamsnap.atlassian.net/browse/' .. jira)
+    vim.fn.system('open https://micollabhub.atlassian.net/browse/' .. jira)
   end),
   vim.keymap.set('n', '<leader>t', function()
     local output_file = '/tmp/test-runner.json'

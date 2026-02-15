@@ -1,11 +1,20 @@
+vim.opt.packpath = vim.fn.stdpath 'data' .. '/site'
 require 'opts'
 require 'keymaps'
 require 'lsp'
+require 'appearance'
+require 'test'
 
 vim.diagnostic.config { virtual_text = true }
 
 require('lazy').setup {
+  config = {
+    performance = {
+      reset_packpath = false,
+    },
+  },
   'tpope/vim-sleuth',
+  'github/copilot.vim',
   {
     'seblyng/roslyn.nvim',
     config = function()
@@ -136,26 +145,29 @@ require('lazy').setup {
     opts = {
       notify_on_error = true,
       format_after_save = function(bufnr)
-        return { lsp_format = 'fallback' }
+        return { lsp_format = 'never' }
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        typescriptreact = { 'biome', 'biome-check' },
+        typescriptreact = { 'eslint_d' },
+        typescript = { 'eslint_d' },
         gdscript = { 'gdformat' },
-        json = { 'biome' },
+        rust = { 'rustfmt' },
+        -- json = { 'biome' },
         ruby = { 'rubocop' },
+        -- cs = { 'csharpier' },
       },
     },
     event = 'BufWritePre',
-    keys = {
-      {
-        '<leader>F',
-        function()
-          require('conform').format()
-        end,
-        { desc = 'Conform [F]ormat' },
-      },
-    },
+    -- keys = {
+    --   {
+    --     '<leader>F',
+    --     function()
+    --       require('conform').format()
+    --     end,
+    --     { desc = 'Conform [F]ormat' },
+    --   },
+    -- },
   },
 
   {
@@ -180,6 +192,22 @@ require('lazy').setup {
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
+
+      -- Load custom snippets
+      require('luasnip.loaders.from_lua').load { paths = './lua/snippets' }
+
+      -- Set up filetype for .cy.js files
+      vim.filetype.add {
+        extension = {
+          ['cy.js'] = 'javascript',
+        },
+        pattern = {
+          ['.*%.cy%.js'] = 'javascript',
+        },
+      }
+
+      -- Load cypress snippets for javascript files
+      luasnip.filetype_extend('javascript', { 'cypress' })
 
       cmp.setup {
         snippet = {
@@ -212,24 +240,7 @@ require('lazy').setup {
       }
     end,
   },
-  {
-    'folke/tokyonight.nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.cmd.hi 'Comment gui=none'
-      require('tokyonight').setup {
-        transparent = true,
-        styles = {
-          sidebars = 'transparent',
-          floats = 'transparent',
-        },
-      }
-      vim.cmd.colorscheme 'tokyonight-night'
-    end,
-  },
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
-
   {
     'echasnovski/mini.nvim',
     config = function()
@@ -280,5 +291,8 @@ require('lazy').setup {
   require 'kickstart.plugins.indent_line',
   { import = 'custom.plugins' },
 }
+
+vim.opt.packpath = vim.fn.stdpath 'data' .. '/site'
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

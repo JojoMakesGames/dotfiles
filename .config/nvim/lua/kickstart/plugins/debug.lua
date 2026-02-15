@@ -11,87 +11,142 @@ return {
   'mfussenegger/nvim-dap',
   -- NOTE: And you can specify dependencies as well
   dependencies = {
-    -- Creates a beautiful debugger UI
-    --
     'rcarriga/nvim-dap-ui',
     'nvim-neotest/nvim-nio',
-
-    -- Installs the debug adapters for you
     'williamboman/mason.nvim',
     'jay-babu/mason-nvim-dap.nvim',
-
-    -- Add your own debuggers here
-    'leoluz/nvim-dap-go',
-    'mxsdev/nvim-dap-vscode-js',
+    'nvim-telescope/telescope.nvim',
   },
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
 
-    -- require('mason-nvim-dap').setup {
-    --   -- Makes a best effort to setup the various debuggers with
-    --   -- reasonable debug configurations
-    --   automatic_setup = true,
-    --
-    --   -- You can provide additional configuration to the handlers,
-    --   -- see mason-nvim-dap README for more information
-    --   handlers = {},
-    --
-    --   -- You'll need to check that you have the required things installed
-    --   -- online, please don't ask me how to install them :)
-    --   ensure_installed = {
-    --     -- Update this to ensure that you have the debuggers for the langs you want
-    --     'js',
-    --     'typescript',
-    --     'delve',
-    -- },
-    -- }
-    -- require('dap-vscode-js').setup {
-    --   -- node_path = "node", -- Path of node executable. Defaults to $NODE_PATH, and then "node"
-    --   -- debugger_path = "(runtimedir)/site/pack/packer/opt/vscode-js-debug", -- Path to vscode-js-debug installation.
-    --   -- debugger_cmd = { "js-debug-adapter" }, -- Command to use to launch the debug server. Takes precedence over `node_path` and `debugger_path`.
-    --   adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' }, -- which adapters to register in nvim-dap
-    --   -- log_file_path = "(stdpath cache)/dap_vscode_js.log" -- Path for file logging
-    --   -- log_file_level = false -- Logging level for output to file. Set to false to disable file logging.
-    --   -- log_console_level = vim.log.levels.ERROR -- Logging level for output to console. Set to false to disable console output.
-    -- }
-    --
-    -- for _, language in ipairs { 'typescript', 'javascript' } do
-    --   require('dap').configurations[language] = {
-    --     {
-    --       type = 'pwa-node',
-    --       request = 'launch',
-    --       name = 'Launch file',
-    --       program = '${file}',
-    --       cwd = '${workspaceFolder}',
-    --     },
-    --     {
-    --       type = 'pwa-node',
-    --       request = 'attach',
-    --       name = 'Attach',
-    --       processId = require('dap.utils').pick_process,
-    --       cwd = '${workspaceFolder}',
-    --       {
-    --         type = 'pwa-node',
-    --         request = 'launch',
-    --         name = 'Debug Jest Tests',
-    --         -- trace = true, -- include debugger info
-    --         runtimeExecutable = 'node',
-    --         runtimeArgs = {
-    --           './node_modules/jest/bin/jest.js',
-    --           '--runInBand',
-    --         },
-    --         rootPath = '${workspaceFolder}',
-    --         cwd = '${workspaceFolder}',
-    --         console = 'integratedTerminal',
-    --         internalConsoleOptions = 'neverOpen',
-    --       },
-    --     },
-    --   }
-    -- end
+    -- Telescope process picker
+    local function pick_process_telescope()
+      local pickers = require 'telescope.pickers'
+      local finders = require 'telescope.finders'
+      local conf = require('telescope.config').values
+      local actions = require 'telescope.actions'
+      local action_state = require 'telescope.actions.state'
 
-    -- Basic debugging keymaps, feel free to change to your liking!
-    vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Debug: Start/Continue' })
+      return coroutine.create(function(coro)
+        local opts = {}
+        local handle = io.popen 'ps ax -o pid,comm'
+        local result = handle:read '*a'
+        handle:close()
+
+        local processes = {}
+        for line in result:gmatch '[^\r\n]+' do
+          local pid, name = line:match '^%s*(%d+)%s+(.+)$'
+          if pid and name then
+            table.insert(processes, { pid = pid, name = name })
+          end
+        end
+
+        pickers
+          .new(opts, {
+            prompt_title = 'Select Process to Attach',
+            finder = finders.new_table {
+              results = processes,
+              entry_maker = function(entry)
+                return {
+                  value = entry.pid,
+                  display = entry.pid .. ': ' .. entry.name,
+                  ordinal = entry.pid .. ' ' .. entry.name,
+                }
+              end,
+            },
+            sorter = conf.generic_sorter(opts),
+            attach_mappings = function(prompt_bufnr)
+              actions.select_default:replace(function()
+                actions.close(prompt_bufnr)
+                local selection = action_state.get_selected_entry()
+                coroutine.resume(coro, tonumber(selection.value))
+              end)
+              return true
+            end,
+          })
+          :find()
+      end)
+    end
+
+    -- Use vsdbg instead of netcoredbg for Apple Silicon
+    --[[ dap.adapters.coreclr = {
+      type = 'executable',
+      command = vim.fn.expand '~/.vsdbg/vsdbg',
+      args = { '--interpreter=vscode' },
+    } ]]
+
+    dap.adapters.coreclr = {
+      type = 'executable',
+      command = 'netcoredbg',
+      args = { '--interpreter=vscode' },
+    }
+
+    dap.configurations.cs = {
+      --   {
+      --     type = 'coreclr',
+      --     name = 'launch',
+      --     request = 'launch',
+      --     -- preLaunchTask = 'build',
+      --     program = function()
+      --       return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/Backend/API/bin/Debug/net8.0/API.dll', 'file')
+      --     end,
+      --     cwd = vim.fn.getcwd() .. '/Backend/API',
+      --     stopAtEntry = false,
+      --     env = {
+      --       ASPNETCORE_ENVIRONMENT = 'Local',
+      --       ASPNETCORE_URLS = 'https://localhost:7170;http://localhost:5233',
+      --     },
+      --   },
+      --   {
+      --     type = 'coreclr',
+      --     name = 'attach',
+      --     request = 'attach',
+      --     processId = pick_process_telescope,
+      --   },
+      {
+        type = 'coreclr',
+        name = 'launch - netcoredbg',
+        request = 'launch',
+        program = function()
+          return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/Backend/API/bin/Debug/net8.0/API.dll', 'file')
+        end,
+        cwd = vim.fn.getcwd() .. '/Backend/API',
+        env = function()
+          return {
+            ASPNETCORE_ENVIRONMENT = 'Local',
+            ASPNETCORE_URLS = 'https://localhost:7170;http://localhost:5233',
+          }
+        end,
+      },
+    }
+
+    require('mason-nvim-dap').setup {
+      -- Makes a best effort to setup the various debuggers with
+      -- reasonable debug configurations
+      automatic_setup = true,
+
+      -- You can provide additional configuration to the handlers,
+      -- see mason-nvim-dap README for more information
+      handlers = {},
+
+      -- You'll need to check that you have the required things installed
+      -- online, please don't ask me how to install them :)
+      ensure_installed = {
+        -- Update this to ensure that you have the debuggers for the langs you want
+        'csharp',
+        'js',
+        'typescript',
+        'delve',
+      },
+    }
+
+    vim.keymap.set('n', '<F5>', function()
+      -- Show debug info
+      print 'Starting debugger...'
+      dap.continue()
+    end, { desc = 'Debug: Start/Continue' })
     vim.keymap.set('n', '<F1>', dap.step_into, { desc = 'Debug: Step Into' })
     vim.keymap.set('n', '<F2>', dap.step_over, { desc = 'Debug: Step Over' })
     vim.keymap.set('n', '<F3>', dap.step_out, { desc = 'Debug: Step Out' })
@@ -100,12 +155,7 @@ return {
       dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
     end, { desc = 'Debug: Set Breakpoint' })
 
-    -- Dap UI setup
-    -- For more information, see |:help nvim-dap-ui|
     dapui.setup {
-      -- Set icons to characters that are more likely to work in every terminal.
-      --    Feel free to remove or use ones that you like more! :)
-      --    Don't feel like these are good choices.
       icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
       controls = {
         icons = {
@@ -128,8 +178,5 @@ return {
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
-
-    -- Install golang specific config
-    require('dap-go').setup()
   end,
 }
