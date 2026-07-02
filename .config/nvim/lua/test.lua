@@ -1,5 +1,4 @@
 local ns = vim.api.nvim_create_namespace 'live-tests'
-local group = vim.api.nvim_create_augroup('jojo-automagic', { clear = true })
 local test_running = false
 
 -- Parse cargo test JSON output
@@ -139,11 +138,8 @@ local function run_tests(bufnr)
   end)
 end
 
--- Auto-run tests on save
-vim.api.nvim_create_autocmd('BufWritePost', {
-  pattern = '*.rs',
-  group = group,
-  callback = function(args)
-    run_tests(args.buf)
-  end,
-})
+-- Run the cargo test suite for the current buffer on demand
+-- (requires the nightly toolchain for JSON test output)
+vim.api.nvim_create_user_command('CargoTest', function()
+  run_tests(vim.api.nvim_get_current_buf())
+end, { desc = 'Run cargo tests and show results as diagnostics' })

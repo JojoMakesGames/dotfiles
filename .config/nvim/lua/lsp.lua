@@ -1,17 +1,14 @@
 vim.pack.add {
-  { src = 'https://github.com/williamboman/mason.nvim' },
-  -- { src = 'https://github.com/seblyng/roslyn.nvim' },
+  { src = 'https://github.com/mason-org/mason.nvim' },
 }
 
-require('mason').setup {
-  registries = {
-    'github:mason-org/mason-registry',
-    'github:Crashdummyy/mason-registry',
-  },
-}
+require('mason').setup {}
+
+-- C# LSP is owned by easy-dotnet.nvim (see lua/debugging.lua)
 
 vim.lsp.inlay_hint.enable(true)
 
+-- Enable every server that has a config on the runtimepath (lsp/*.lua)
 local lsp_configs = {}
 
 for _, f in pairs(vim.api.nvim_get_runtime_file('lsp/*.lua', true)) do
@@ -37,16 +34,6 @@ vim.keymap.set('v', 'f', function()
     },
   }
 end, { desc = 'Format selection', silent = true })
-
-vim.keymap.set('n', 'gro', function()
-  vim.lsp.buf.code_action {
-    context = {
-      only = { 'source.organizeImports' },
-      diagnostics = {},
-    },
-    apply = true,
-  }
-end, { desc = 'Organize Imports' })
 
 vim.keymap.set('n', 'gro', function()
   vim.lsp.buf.code_action {

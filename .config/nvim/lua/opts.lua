@@ -41,6 +41,17 @@ vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 vim.opt.foldtext = ''
 vim.opt.foldlevelstart = 100
 
+-- Reload buffers edited outside nvim (e.g. by Claude Code in another pane)
+vim.o.autoread = true
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'TermLeave' }, {
+  group = vim.api.nvim_create_augroup('autoread-checktime', { clear = true }),
+  callback = function()
+    if vim.bo.buftype == '' then
+      vim.cmd 'checktime'
+    end
+  end,
+})
+
 -- Add #region folding support for supported languages
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact', 'cs', 'csharp', 'c', 'cpp' },

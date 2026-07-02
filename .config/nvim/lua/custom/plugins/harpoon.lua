@@ -1,82 +1,29 @@
--- local wk = require 'which-key'
--- wk.register { ['<leader>h'] = { name = 'Harpoon' } }
-return {
-  'ThePrimeagen/harpoon',
-  event = 'VeryLazy',
-  config = function()
-    require('harpoon').setup {
-      global_settings = {
-        save_on_toggle = true,
-        save_on_change = true,
-      },
-    }
-  end,
-  keys = {
-    {
-      '<leader>ha',
-      function()
-        require('harpoon.mark').add_file()
-      end,
-      desc = '[h]arpoon [a]dd',
-    },
-    {
-      '<leader>hh',
-      function()
-        require('harpoon.ui').toggle_quick_menu()
-      end,
-      desc = '[h]arken [h]arpoon',
-    },
-    {
-      '<leader>hp',
-      function()
-        require('harpoon.ui').nav_prev()
-      end,
-      desc = '[h]arpoon [p]revious',
-    },
-    {
-      '<leader>hn',
-      function()
-        require('harpoon.ui').nav_next()
-      end,
-      desc = '[h]arpoon [n]ext',
-    },
-    {
-      '<leader>h1',
-      function()
-        require('harpoon.ui').nav_file(1)
-      end,
-      desc = 'Harpoon file 1',
-    },
-    {
-      '<leader>h2',
-      function()
-        require('harpoon.ui').nav_file(2)
-      end,
-      desc = 'Harpoon file 2',
-    },
-    {
-      '<leader>h3',
-      function()
-        require('harpoon.ui').nav_file(3)
-      end,
-      desc = 'Harpoon file 3',
-    },
-    {
-      '<leader>h4',
-      function()
-        require('harpoon.ui').nav_file(4)
-      end,
-      desc = 'Harpoon file 4',
-    },
-    {
-      '<leader>h5',
-      function()
-        require('harpoon.ui').nav_file(5)
-      end,
-      desc = 'Harpoon file 5',
-    },
-  },
-  dependencies = {
-    'nvim-lua/plenary.nvim',
+vim.pack.add {
+  'https://github.com/nvim-lua/plenary.nvim',
+  { src = 'https://github.com/ThePrimeagen/harpoon', version = 'harpoon2' },
+}
+
+local harpoon = require 'harpoon'
+harpoon:setup {
+  settings = {
+    save_on_toggle = true,
   },
 }
+
+vim.keymap.set('n', '<leader>ha', function()
+  harpoon:list():add()
+end, { desc = '[h]arpoon [a]dd' })
+vim.keymap.set('n', '<leader>hh', function()
+  harpoon.ui:toggle_quick_menu(harpoon:list())
+end, { desc = '[h]arken [h]arpoon' })
+vim.keymap.set('n', '<leader>hp', function()
+  harpoon:list():prev()
+end, { desc = '[h]arpoon [p]revious' })
+vim.keymap.set('n', '<leader>hn', function()
+  harpoon:list():next()
+end, { desc = '[h]arpoon [n]ext' })
+for i = 1, 5 do
+  vim.keymap.set('n', '<leader>h' .. i, function()
+    harpoon:list():select(i)
+  end, { desc = 'Harpoon file ' .. i })
+end

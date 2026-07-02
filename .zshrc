@@ -15,7 +15,7 @@ export GOPATH=$HOME/go
 export PUBSUB_EMULATOR_HOST='http://host.docker.internal:8085'
 export PATH="$PATH:/opt/nvim-linux64/bin"
 export DOTNET_ROOT="/usr/local/share/dotnet"
-export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools
+export PATH=$PATH:$DOTNET_ROOT:$HOME/.dotnet/tools
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,

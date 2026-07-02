@@ -1,6 +1,5 @@
-return {
-  'dmmulroy/ts-error-translator.nvim',
-  config = function()
-    require('ts-error-translator').setup()
-  end,
+vim.pack.add {
+  'https://github.com/dmmulroy/ts-error-translator.nvim',
 }
+
+require('ts-error-translator').setup()

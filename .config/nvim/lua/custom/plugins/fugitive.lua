@@ -1,7 +1,4 @@
-return {
-  'tpope/vim-fugitive',
-  event = 'VeryLazy',
-  dependencies = {
-    'tpope/vim-rhubarb',
-  },
+vim.pack.add {
+  'https://github.com/tpope/vim-fugitive',
+  'https://github.com/tpope/vim-rhubarb',
 }

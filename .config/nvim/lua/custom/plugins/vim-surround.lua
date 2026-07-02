@@ -1,4 +1,3 @@
-return {
-  'tpope/vim-surround',
-  event = 'VeryLazy',
+vim.pack.add {
+  'https://github.com/tpope/vim-surround',
 }
